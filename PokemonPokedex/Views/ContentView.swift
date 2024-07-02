@@ -19,7 +19,7 @@ struct ContentView: View {
             
             SearchView()
                 .tabItem {
-                    Image(systemName: "magnifyingglass")
+                    Image(systemName: "sparkle.magnifyingglass")
                     Text("Search")
                 }
                 .tag(1)
@@ -30,6 +30,13 @@ struct ContentView: View {
                     Text("Saved")
                 }
                 .tag(2)
+            
+            PokemonListView()
+                .tabItem {
+                    Image(systemName: "list.number")
+                    Text("List")
+                }
+                .tag(3)
         }
     }
 }
@@ -37,3 +44,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+

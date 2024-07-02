@@ -10,8 +10,9 @@ struct Pokemon: Codable {
     let id: Int
     let name: String
     let sprites: Sprites
-    let types: [PokemonType]
-    let species: Species
+    let types: [PokemonType]?
+    let species: Species?
+    let moves: [Move]
     
     struct Sprites: Codable {
         let frontDefault: URL?
@@ -31,7 +32,14 @@ struct Pokemon: Codable {
     
     struct Species: Codable {
         let url: URL
+    }
+    
+    struct Move: Codable {
+        let move: MoveData
         
+        struct MoveData: Codable {
+            let name: String
+        }
     }
 }
 
@@ -64,5 +72,26 @@ struct EvolutionChain: Codable {
             let name: String
             let url: URL
         }
+    }
+}
+
+struct PokemonListModel: Codable {
+    let results: [Pokemons]
+    
+    struct Pokemons: Codable {
+        let name: String
+        let url: URL
+    }
+}
+
+extension Pokemon {
+    
+    static func mockedPokemon() -> Pokemon {
+        let id = 1
+        let name = "Pikachu"
+        let sprites = Sprites(frontDefault: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"))
+        let species = Species(url: URL(string: "https://pokeapi.co/api/v2/pokemon-species/25/")!)
+        
+        return Pokemon(id: id, name: name, sprites: sprites, types: nil, species: species, moves: [Move(move: Move.MoveData(name: ""))])
     }
 }

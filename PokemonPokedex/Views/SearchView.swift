@@ -8,50 +8,49 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State private var query: String = ""
+    @State private var name: String = ""
     @State private var errorMessage: String?
-    @EnvironmentObject private var detailViewModel : PokemonDetailViewModel
+    @EnvironmentObject private var pokemonViewModel : PokemonViewModel
     
     var body: some View {
-        VStack {
-            RoundedRectangle(cornerRadius: 25)
-                .frame(height: 150)
-                .foregroundStyle(.red)
-                .ignoresSafeArea()
-                .overlay {
-                    TextField("Search Pokémon", text: $query, onCommit: {
-                        Task {
-                            print(query)
-                            await searchPokemon()
-                        }
-                    })
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                    .padding(.bottom, 30)
+        NavigationView {
+            VStack {
+                RoundedRectangle(cornerRadius: 25)
+                    .frame(height: 150)
+                    .foregroundStyle(.red)
+                    .ignoresSafeArea()
+                    .overlay {
+                        TextField("Search Pokémon", text: $name, onCommit: {
+                            Task {
+                                await searchPokemon()
+                            }
+                        })
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.bottom,40)
+                        .padding(.horizontal, 30)
+                    }
+                Spacer()
+                NavigationLink {
+                    if let pokemon = pokemonViewModel.searchedPokemon {
+                        PokemonDetailView (
+                            pokemon: pokemon,
+                            evolutions: pokemonViewModel.searchedPokemonEvolutions
+                        )
+                    }
+                } label: {
+                    PokemonView()
                 }
-           
-            
-            if let pokemon = detailViewModel.pokemon {
-                PokemonDetailView()
-                    .padding()
-            } else if let errorMessage = errorMessage {
-                Text(errorMessage)
+                Spacer()
             }
         }
-        Spacer()
     }
     
     private func searchPokemon() async {
-        do {
-            let pokemon = try await PokemonAPI.fetchPokemon(by: query)
-            detailViewModel.pokemon = pokemon
-        } catch {
-            self.errorMessage = error.localizedDescription
-        }
+        await pokemonViewModel.fetchSearchedPokemon(with: name)
     }
 }
 
 #Preview {
     SearchView()
-        .environmentObject(PokemonDetailViewModel())
+        .environmentObject(PokemonViewModel())
 }

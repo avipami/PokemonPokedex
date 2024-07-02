@@ -13,11 +13,11 @@ class PokemonAPI {
     static let baseURL = "https://pokeapi.co/api/v2"
     
     static func fetchRandomPokemon() async throws -> Pokemon {
-        let url = URL(string: "\(baseURL)/pokemon/\(Int.random(in: 1...3))")!
+        let url = URL(string: "\(baseURL)/pokemon/\(Int.random(in: 1...151))")!
         return try await NetworkManager.shared.fetch(url: url.absoluteString)
     }
     
-    static func fetchPokemon(by name: String) async throws -> Pokemon {
+    static func fetchPokemon(with name: String) async throws -> Pokemon {
         let url = "\(baseURL)/pokemon/\(name.lowercased())"
         return try await NetworkManager.shared.fetch(url: url)
     }
@@ -28,5 +28,10 @@ class PokemonAPI {
     
     static func fetchPokemonSpecies(from url: URL) async throws -> PokemonSpecies {
         return try await NetworkManager.shared.fetch(url: url.absoluteString)
+    }
+    
+    static func fetchPokemonlist() async throws -> PokemonListModel {
+        let url = "https://pokeapi.co/api/v2/pokemon?limit=151"
+        return try await NetworkManager.shared.fetch(url: url)
     }
 }
